@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd -P)"
+EXPECTED_ROOT="/home/iomar/Dev/avamovie-platform"
+LARADOCK_ROOT="/home/iomar/Dev/laradock"
+COMPOSE_FILE="$LARADOCK_ROOT/docker-compose.yml"
+COMPOSE_PROJECT="laradock"
+CONTAINER_PROJECT="/var/www/avamovie-platform"
+
+# POST_INTEGRATION_MAIN is intentionally explicit. It is a lineage floor,
+# never inferred from the current local checkout or origin/main.
+DOCTOR_BASELINE="POST_INTEGRATION_MAIN"
+EXPECTED_BRANCH="main"
+BASELINE_FLOOR="3e977ba7032689565e09acc3e178db59236948b5"
+EXPECTED_UPSTREAM="origin/main"
+EXPECTED_AHEAD_BEHIND=$'0\t0'
+
+die() { printf 'ERRO: %s\n' "$*" >&2; exit 1; }
+note() { printf '%s\n' "$*"; }
+pass() { printf 'OK: %s\n' "$*"; }
+
+usage() {
+    cat <<'EOF'
+Uso: bin/doctor [documentation-maintenance|--help]
+
+Modos:
+  (sem argumento)              CLEAN_INTEGRATED: exige working tree limpa.
+  documentation-maintenance    DOCUMENTATION_MAINTENANCE: permite somente o
+                                conjunto explícito de paths desta manutenção.
+
+O baseline POST_INTEGRATION_MAIN usa um piso explícito. CLEAN_INTEGRATED exige
+um descendente publicado, limpo e alinhado a origin/main.
+EOF
+}
+
+mode="CLEAN_INTEGRATED"
+case "${1:-}" in
+    '') ;;
+    documentation-maintenance) mode="DOCUMENTATION_MAINTENANCE" ;;
+    --help) usage; exit 0 ;;
+    *) die "argumento desconhecido: $1" ;;
+esac
+[[ $# -le 1 ]] || die "argumentos em excesso"
+
+WORKSPACE_UID="$(id -u)"
+WORKSPACE_GID="$(id -g)"
+[[ "$WORKSPACE_UID" =~ ^[1-9][0-9]*$ && "$WORKSPACE_GID" =~ ^[1-9][0-9]*$ ]] || die "execução local root ou UID/GID inválido não é permitida"
+WORKSPACE_USER="$WORKSPACE_UID:$WORKSPACE_GID"
+
+[[ "$REPO_ROOT" == "$EXPECTED_ROOT" ]] || die "execução fora do repositório autorizado"
+cd -- "$REPO_ROOT"
+[[ -f "$COMPOSE_FILE" ]] || die "Compose do Laradock não encontrado"
+
+compose() {
+    printf 'CMD: docker compose --project-name %s -f %s %s\n' "$COMPOSE_PROJECT" "$COMPOSE_FILE" "$*"
+    docker compose --project-name "$COMPOSE_PROJECT" -f "$COMPOSE_FILE" "$@"
+}
+
+workspace_bash() {
+    compose exec -T --user "$WORKSPACE_USER" --workdir "$CONTAINER_PROJECT" workspace bash -lc "$1"
+}
+
+normalize_origin() {
+    local remote="$1"
+    case "$remote" in
+        https://github.com/avaproia/avamovie|https://github.com/avaproia/avamovie.git|\
+        git@github.com:avaproia/avamovie|git@github.com:avaproia/avamovie.git|\
+        ssh://git@github.com/avaproia/avamovie|ssh://git@github.com/avaproia/avamovie.git)
+            printf 'github.com/avaproia/avamovie\n'
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+assert_clean_integrated_baseline() {
+    local head origin_main
+    head="$(git rev-parse HEAD)"
+    origin_main="$(git rev-parse refs/remotes/origin/main)"
+    [[ "$origin_main" == "$head" ]] || die "origin/main divergente do HEAD publicado"
+    git merge-base --is-ancestor "$BASELINE_FLOOR" HEAD || die "HEAD não descende do BASELINE_FLOOR"
+    pass "CLEAN_INTEGRATED em descendente publicado do BASELINE_FLOOR"
+}
+
+note "Repositório: $REPO_ROOT"
+note "DOCTOR_BASELINE=$DOCTOR_BASELINE"
+note "BASELINE_FLOOR=$BASELINE_FLOOR"
+note "DOCTOR_MODE=$mode"
+[[ "$(git branch --show-current)" == "$EXPECTED_BRANCH" ]] || die "branch divergente"
+[[ "$(git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}')" == "$EXPECTED_UPSTREAM" ]] || die "upstream divergente"
+[[ "$(normalize_origin "$(git remote get-url origin)")" == "github.com/avaproia/avamovie" ]] || die "remote origin divergente"
+ahead_behind="$(git rev-list --left-right --count refs/remotes/origin/main...HEAD)"
+[[ "$ahead_behind" == "$EXPECTED_AHEAD_BEHIND" || "$ahead_behind" == "0 0" ]] || die "ahead/behind divergente"
+pass "branch, upstream, remote e ahead/behind dentro do baseline explícito"
+
+[[ -z "$(git diff --cached --name-only)" ]] || die "staged divergente"
+git diff --check || die "diff check falhou"
+
+status="$(git status --porcelain=v1 --untracked-files=all)"
+case "$mode" in
+    CLEAN_INTEGRATED)
+        [[ -z "$status" ]] || die "CLEAN_INTEGRATED exige working tree limpa"
+        assert_clean_integrated_baseline
+        ;;
+    DOCUMENTATION_MAINTENANCE)
+        [[ "$(git rev-parse HEAD)" == "$BASELINE_FLOOR" ]] || die "DOCUMENTATION_MAINTENANCE exige HEAD no BASELINE_FLOOR"
+        [[ "$(git rev-parse refs/remotes/origin/main)" == "$BASELINE_FLOOR" ]] || die "DOCUMENTATION_MAINTENANCE exige origin/main no BASELINE_FLOOR"
+        expected_status=$(cat <<'EOF'
+ M bin/doctor
+ M docs/governance/CURRENT_STATE.md
+EOF
+)
+        [[ "$(LC_ALL=C sort <<< "$status")" == "$(LC_ALL=C sort <<< "$expected_status")" ]] || die "DOCUMENTATION_MAINTENANCE exige conjunto exato de paths autorizados"
+        ;;
+esac
+pass "estado Git aceito para $mode"
+
+for path in AGENTS.md docs/README.md docs/governance/AVAMOVIE_MASTER_PLAN.md docs/governance/CURRENT_STATE.md docs/governance/DECISION_LOG.md docs/governance/EXECUTION_RULES.md docs/execution/LOCAL_DEVELOPMENT.md; do
+    [[ -f "$path" ]] || die "documento obrigatório ausente: $path"
+done
+[[ -f "$REPO_ROOT/bin/dev" && -f "$REPO_ROOT/bin/test" && -f "$REPO_ROOT/bin/quality" ]] || die "wrappers oficiais ausentes"
+pass "documentação e wrappers presentes"
+
+running_services="$(compose ps --status running --services)"
+grep -Fxq workspace <<< "$running_services" || die "workspace não está ativo"
+grep -Fxq mysql <<< "$running_services" || die "MySQL local não está ativo"
+grep -Fxq redis <<< "$running_services" || die "Redis local não está ativo"
+pass "workspace, MySQL e Redis ativos"
+
+workspace_bash '[[ "$(pwd -P)" == "/var/www/avamovie-platform" ]]; test -d /var/www/avamovie-platform; test -f artisan; test -f composer.json; test -f package.json; id'
+pass "projeto e identidade do workspace confirmados"
+
+workspace_bash 'command -v php; php -v; php --ini; command -v composer; composer --version; command -v node; node --version; command -v npm; npm --version; php artisan --version'
+pass "PHP, Composer, Node, NPM e Artisan version confirmados"
+
+workspace_bash 'getent hosts mysql; getent hosts redis; timeout 3 bash -c "</dev/tcp/mysql/3306"; timeout 3 bash -c "</dev/tcp/redis/6379"'
+pass "DNS e portas TCP locais confirmados sem autenticação"
+
+note "DOCTOR_RESULT=PASS"

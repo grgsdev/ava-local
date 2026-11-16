@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd -P)"
+EXPECTED_ROOT="/home/iomar/Dev/avamovie-platform"
+
+usage() {
+    cat <<'EOF'
+Uso:
+  bin/quality --help
+  bin/quality --list
+  bin/quality --dry-run <ferramenta>
+
+Nenhuma ferramenta de qualidade é executada por este wrapper nesta unidade.
+EOF
+}
+
+die() { printf 'ERRO: %s\n' "$*" >&2; exit 2; }
+
+[[ "$REPO_ROOT" == "$EXPECTED_ROOT" ]] || die "execução fora do repositório autorizado"
+cd -- "$REPO_ROOT"
+
+case "${1:-}" in
+    --help)
+        [[ $# -eq 1 ]] || die "argumentos adicionais não permitidos com --help"
+        usage
+        ;;
+    --list)
+        [[ $# -eq 1 ]] || die "argumentos adicionais não permitidos com --list"
+        printf '%s\n' 'Pint: dependência Composer declarada; não validada funcionalmente'
+        printf '%s\n' 'TypeScript/vue-tsc: dependências NPM declaradas; não validada funcionalmente'
+        ;;
+    --dry-run)
+        [[ $# -eq 2 ]] || die 'uso: bin/quality --dry-run <ferramenta>'
+        case "$2" in
+            pint)
+                printf '%s\n' 'DRY-RUN: composer exec -- pint'
+                ;;
+            typecheck|vue-tsc)
+                printf '%s\n' 'DRY-RUN: npx vue-tsc --noEmit'
+                ;;
+            *)
+                die "ferramenta não reconhecida: $2"
+                ;;
+        esac
+        printf '%s\n' 'Não executado: qualidade requer unidade autorizada.'
+        ;;
+    '')
+        die 'execução real de qualidade não está autorizada nesta unidade; use --help, --list ou --dry-run'
+        ;;
+    *)
+        die "argumento desconhecido: $1"
+        ;;
+esac

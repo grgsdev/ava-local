@@ -1,0 +1,65 @@
+{
+    "name": "Level",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "logsActivity": true,
+    "relations": [],
+    "attributes": [
+        {
+            "name": "level_number",
+            "type": "integer",
+            "validate": true,
+            "required": true,
+            "unique": true,
+            "sortAble": true,
+            "description": "O número do nível, usado para ordenação.",
+            "example": "1"
+        },
+        {
+            "name": "name",
+            "type": "string",
+            "validate": true,
+            "required": true,
+            "searchAble": true,
+            "description": "O nome do nível (ex: Iniciante, Explorador, Mestre).",
+            "example": "Iniciante"
+        },
+        {
+            "name": "points_required",
+            "type": "integer",
+            "validate": true,
+            "required": true,
+            "sortAble": true,
+            "description": "Pontos de experiência necessários para atingir este nível.",
+            "example": "0"
+        },
+        {
+            "name": "reward_points",
+            "type": "integer",
+            "validate": true,
+            "nullable": true,
+            "description": "Pontos de bónus que o usuário ganha ao atingir este nível.",
+            "example": "50"
+        },
+        {
+            "name": "reward_coins",
+            "type": "integer",
+            "validate": true,
+            "nullable": true,
+            "description": "Moedas que o usuário ganha ao atingir este nível.",
+            "example": "10"
+        },
+        {
+            "name": "is_premium_only",
+            "type": "boolean",
+            "validate": true,
+            "filterAble": true,
+            "exactFilter": true,
+            "description": "Marcar se este nível é exclusivo para sócios Premium (com subscrição ativa)."
+        }
+    ],
+    "created_at": "2025-08-04 14:22:33",
+    "updated_at": "2025-08-04 14:22:33"
+}

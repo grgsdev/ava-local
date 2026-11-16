@@ -1,0 +1,54 @@
+{
+    "name": "UserPlan",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "logsActivity": true,
+    "modelCache": true,
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "validate": true,
+            "searchAble": true,
+            "description": "Nome do plano para Sócios.",
+            "example": "Sócio Premium"
+        },
+        {
+            "name": "description",
+            "type": "text",
+            "nullable": true,
+            "validate": true,
+            "description": "Descrição detalhada dos benefícios do plano para o Sócio."
+        },
+        {
+            "name": "price_monthly",
+            "type": "decimal",
+            "required": true,
+            "validate": true,
+            "description": "Preço da subscrição mensal.",
+            "example": "19.90"
+        },
+        {
+            "name": "price_yearly",
+            "type": "decimal",
+            "required": true,
+            "validate": true,
+            "description": "Preço da subscrição anual.",
+            "example": "199.90"
+        },
+        {
+            "name": "point_multiplier",
+            "type": "decimal",
+            "precision": 8,
+            "scale": 2,
+            "default": "1.00",
+            "validate": true,
+            "description": "Multiplicador de pontos para este plano (ex: 1.5 para 50% mais pontos).",
+            "example": "1.5"
+        }
+    ],
+    "relations": []
+}

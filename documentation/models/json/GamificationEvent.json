@@ -1,0 +1,50 @@
+{
+    "name": "GamificationEvent",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "logsActivity": true,
+    "modelCache": true,
+    "attributes": [
+        {
+            "name": "title",
+            "type": "string",
+            "required": true
+        },
+        {
+            "name": "description",
+            "type": "text",
+            "nullable": true
+        },
+        {
+            "name": "starts_at",
+            "type": "datetime",
+            "required": true
+        },
+        {
+            "name": "ends_at",
+            "type": "datetime",
+            "required": true
+        },
+        {
+            "name": "points_multiplier",
+            "type": "decimal",
+            "precision": 4,
+            "scale": 2,
+            "required": true,
+            "default": "1.00",
+            "description": "O multiplicador a ser aplicado aos PONTOS (1.0 = sem bónus)."
+        },
+        {
+            "name": "coins_multiplier",
+            "type": "decimal",
+            "precision": 4,
+            "scale": 2,
+            "required": true,
+            "default": "1.00",
+            "description": "O multiplicador a ser aplicado às MOEDAS (1.0 = sem bónus)."
+        }
+    ],
+    "relations": []
+}

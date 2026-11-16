@@ -1,0 +1,60 @@
+{
+    "name": "EstablishmentPlan",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "logsActivity": true,
+    "modelCache": true,
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "validate": true,
+            "searchAble": true,
+            "description": "Nome do plano para estabelecimentos.",
+            "example": "Plano Master"
+        },
+        {
+            "name": "description",
+            "type": "text",
+            "nullable": true,
+            "validate": true,
+            "description": "Descrição detalhada dos benefícios do plano."
+        },
+        {
+            "name": "price_monthly",
+            "type": "decimal",
+            "required": true,
+            "validate": true,
+            "description": "Preço da subscrição mensal.",
+            "example": "99.90"
+        },
+        {
+            "name": "price_yearly",
+            "type": "decimal",
+            "required": true,
+            "validate": true,
+            "description": "Preço da subscrição anual.",
+            "example": "999.90"
+        },
+        {
+            "name": "max_team_members",
+            "type": "integer",
+            "required": true,
+            "validate": true,
+            "description": "Número máximo de usuários na equipa do estabelecimento.",
+            "example": 5
+        },
+        {
+            "name": "max_gallery_images",
+            "type": "integer",
+            "required": true,
+            "validate": true,
+            "description": "Número máximo de imagens na galeria do estabelecimento.",
+            "example": 20
+        }
+    ],
+    "relations": []
+}

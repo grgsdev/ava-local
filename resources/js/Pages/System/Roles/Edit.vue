@@ -1,0 +1,136 @@
+<script setup lang="ts">
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head, useForm } from '@inertiajs/vue3';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import type { Role, Permission, Paginated } from '@/types'; // MODIFIED: Import Paginated
+import { computed } from 'vue';
+
+// MODIFIED: The prop now correctly expects a Paginated object (or similar structure with a 'data' key)
+const props = defineProps<{
+    role: Role;
+    allPermissions: Paginated<Permission>;
+}>();
+
+// O useForm is initialized with the role's data, including existing permission IDs
+const form = useForm({
+    name: props.role.name,
+    permissions: props.role.permissions.map(p => p.id),
+});
+
+// Groups all available permissions by their "subject"
+const groupedPermissions = computed(() => {
+    const groups: Record<string, Permission[]> = {};
+
+    // MODIFIED: We access the array inside props.allPermissions.data
+    const permissionsList = props.allPermissions.data || [];
+
+    permissionsList.forEach(p => {
+        const groupName = p.name.split(' ')[1] || p.name;
+        if (!groups[groupName]) {
+            groups[groupName] = [];
+        }
+        groups[groupName].push(p);
+    });
+
+    const sortedKeys = Object.keys(groups).sort();
+    const sortedGroups: Record<string, Permission[]> = {};
+    sortedKeys.forEach(key => {
+        sortedGroups[key] = groups[key];
+    });
+
+    return sortedGroups;
+});
+
+// Checks if all checkboxes in a group are selected
+const isGroupSelected = (groupPermissions: Permission[]): boolean => {
+    const groupIds = groupPermissions.map(p => p.id);
+    return groupIds.every(id => form.permissions.includes(id));
+};
+
+// Selects or deselects all checkboxes in a group
+const toggleGroupSelection = (groupPermissions: Permission[]) => {
+    const groupIds = groupPermissions.map(p => p.id);
+    const allSelected = isGroupSelected(groupPermissions);
+
+    if (allSelected) {
+        form.permissions = form.permissions.filter(id => !groupIds.includes(id));
+    } else {
+        const permissionsToAdd = groupIds.filter(id => !form.permissions.includes(id));
+        form.permissions.push(...permissionsToAdd);
+    }
+};
+
+const submit = () => {
+    form.put(route('system.roles.update', props.role.id));
+};
+</script>
+
+<template>
+
+    <Head title="Editar Papel" />
+
+    <AuthenticatedLayout>
+        <div>
+            <Card class="w-full p-6 mx-auto" style="max-width: 65%; min-width: 350px;">
+                <form @submit.prevent="submit">
+                    <CardHeader>
+                        <CardTitle>Editar Papel: {{ role.name }}</CardTitle>
+                        <CardDescription>
+                            Ajuste o nome e as permissões associadas a este papel.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent class="space-y-6">
+                        <div class="space-y-1.5">
+                            <Label for="name">Nome do Papel</Label>
+                            <Input id="name" v-model="form.name" type="text" autofocus />
+                            <p v-if="form.errors.name" class="text-sm text-red-500">
+                                {{ form.errors.name }}
+                            </p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <Label>Permissões</Label>
+                            <div v-for="(group, groupName) in groupedPermissions" :key="groupName"
+                                class="p-4 border rounded-md">
+                                <div class="flex items-center justify-between pb-4 mb-4 border-b">
+                                    <h3 class="font-semibold capitalize">{{ groupName }}</h3>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="checkbox" :id="`select-all-${groupName}`"
+                                            :checked="isGroupSelected(group)" @change="toggleGroupSelection(group)"
+                                            class="w-4 h-4 border-gray-300 rounded text-primary focus:ring-primary" />
+                                        <Label :for="`select-all-${groupName}`" class="text-sm font-medium">
+                                            Marcar Todos
+                                        </Label>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+                                    <div v-for="permission in group" :key="permission.id"
+                                        class="flex items-center space-x-2">
+                                        <input type="checkbox" :id="`perm-${permission.id}`" :value="permission.id"
+                                            v-model="form.permissions"
+                                            class="w-4 h-4 border-gray-300 rounded text-primary focus:ring-primary" />
+                                        <Label :for="`perm-${permission.id}`" class="text-sm font-normal">
+                                            {{ permission.name }}
+                                        </Label>
+                                    </div>
+                                </div>
+                            </div>
+                            <p v-if="form.errors.permissions" class="text-sm text-red-500">
+                                {{ form.errors.permissions }}
+                            </p>
+                        </div>
+                    </CardContent>
+                    <CardFooter class="flex justify-end">
+                        <Button :disabled="form.processing">
+                            Salvar Alterações
+                        </Button>
+                    </CardFooter>
+
+                </form>
+            </Card>
+        </div>
+    </AuthenticatedLayout>
+</template>

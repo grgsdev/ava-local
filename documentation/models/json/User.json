@@ -1,0 +1,149 @@
+{
+    "name": "User",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "useApprovedStatus": false,
+    "useScribe": true,
+    "authorize": true,
+    "logsActivity": true,
+    "clearsResponseCache": true,
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "length": 255,
+            "max": 255,
+            "min": 3,
+            "validate": true,
+            "required": true,
+            "nullable": true,
+            "sortAble": true,
+            "filterAble": true,
+            "searchAble": true,
+            "description": "Nome completo do usuário.",
+            "example": "João da Silva"
+        },
+        {
+            "name": "email",
+            "type": "email",
+            "validate": true,
+            "required": true,
+            "nullable": true,
+            "unique": true,
+            "sortAble": true,
+            "filterAble": true,
+            "searchAble": true,
+            "description": "Endereço de e-mail único do usuário.",
+            "example": "joao.silva@lupa.app"
+        },
+        {
+            "name": "email_verified_at",
+            "type": "timestamp",
+            "validate": false,
+            "nullable": true,
+            "description": "Timestamp de quando o e-mail do usuário foi verificado.",
+            "example": "2025-08-01 10:00:00"
+        },
+        {
+            "name": "nickname",
+            "type": "string",
+            "length": 50,
+            "validate": true,
+            "nullable": true,
+            "unique": true,
+            "sortAble": true,
+            "filterAble": true,
+            "searchAble": true,
+            "description": "Apelido ou nome social do usuário.",
+            "example": "Jão"
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "length": 50,
+            "max": 50,
+            "min": 3,
+            "validate": true,
+            "nullable": true,
+            "unique": true,
+            "sortAble": true,
+            "filterAble": true,
+            "exactFilter": false,
+            "searchAble": true,
+            "description": "Nome de usuário único para login (sem espaços ou caracteres especiais).",
+            "example": "joao_silva90"
+        },
+        {
+            "name": "pin_code",
+            "type": "string",
+            "length": 255,
+            "validate": true,
+            "nullable": true,
+            "description": "PIN de 4 a 6 dígitos para login rápido (deve ser armazenado com hash).",
+            "example": "123456"
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "length": 255,
+            "max": 8,
+            "min": 8,
+            "validate": true,
+            "required": true,
+            "nullable": true,
+            "description": "Senha criptografada do usuário.",
+            "example": "senhaForte123!"
+        },
+        {
+            "name": "remember_token",
+            "type": "string",
+            "length": 100,
+            "validate": false,
+            "nullable": true,
+            "description": "Token para a funcionalidade 'Lembrar-me'."
+        },
+        {
+            "name": "phone_number",
+            "type": "string",
+            "validate": true,
+            "nullable": true,
+            "unique": true,
+            "sortAble": true,
+            "filterAble": true,
+            "searchAble": true,
+            "description": "Número de telefone do usuário.",
+            "example": "+5541999998888"
+        },
+        {
+            "name": "birth_date",
+            "type": "date",
+            "validate": true,
+            "required": true,
+            "nullable": true,
+            "sortAble": true,
+            "filterAble": true,
+            "searchAble": true,
+            "description": "Data de nascimento do usuário.",
+            "example": "1990-01-15"
+        },
+        {
+            "name": "avatar",
+            "type": "image",
+            "validate": true,
+            "nullable": true,
+            "description": "Imagem de perfil do usuário."
+        }
+    ],
+    "relations": [
+        {
+            "name": "subscription",
+            "type": "hasOne",
+            "related": "UserSubscription",
+            "description": "A subscrição ativa do usuário (Sócio Premium)."
+        }
+    ],
+    "created_at": "2025-08-03 01:04:41",
+    "updated_at": "2025-08-03 01:55:15"
+}

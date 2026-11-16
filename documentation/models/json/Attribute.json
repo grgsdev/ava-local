@@ -1,0 +1,34 @@
+{
+    "name": "Attribute",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "logsActivity": true,
+    "modelCache": true,
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "unique": true,
+            "validate": true,
+            "searchAble": true,
+            "description": "Nome do atributo (ex: Pet Friendly).",
+            "example": "Pet Friendly"
+        }
+    ],
+    "relations": [
+        {
+            "name": "establishments",
+            "type": "belongsToMany",
+            "related": "Establishment"
+        },
+        {
+            "name": "categories",
+            "type": "belongsToMany",
+            "related": "EstablishmentCategory",
+            "description": "Categorias às quais este atributo pode ser associado/sugerido."
+        }
+    ]
+}

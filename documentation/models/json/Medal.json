@@ -1,0 +1,62 @@
+{
+    "name": "Medal",
+    "version": "V1",
+    "timestamps": true,
+    "softDeletes": true,
+    "useIsActive": true,
+    "logsActivity": true,
+    "modelCache": true,
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "unique": true,
+            "validate": true,
+            "searchAble": true,
+            "description": "Nome da medalha (ex: Explorador de Bairros).",
+            "example": "Explorador de Bairros"
+        },
+        {
+            "name": "description",
+            "type": "text",
+            "nullable": true,
+            "validate": true,
+            "description": "Descrição de como conquistar a medalha e a sua história."
+        },
+        {
+            "name": "bonus_points_awarded",
+            "type": "integer",
+            "nullable": true,
+            "default": "0",
+            "validate": true,
+            "description": "Pontos de bónus que o usuário ganha ao conquistar a medalha.",
+            "example": 100
+        },
+        {
+            "name": "bonus_coins_awarded",
+            "type": "integer",
+            "nullable": true,
+            "default": "0",
+            "validate": true,
+            "description": "Moedas que o usuário ganha ao conquistar a medalha.",
+            "example": 20
+        },
+        {
+            "name": "icon",
+            "type": "image",
+            "multiple": false,
+            "nullable": true,
+            "validate": true,
+            "description": "Ícone visual da medalha."
+        }
+    ],
+    "relations": [
+        {
+            "name": "required_level",
+            "type": "belongsTo",
+            "related": "Level",
+            "description": "O nível mínimo que o Sócio precisa de ter para poder ganhar esta medalha."
+        }
+    ]
+}

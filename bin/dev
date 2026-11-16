@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd -P)"
+EXPECTED_ROOT="/home/iomar/Dev/avamovie-platform"
+
+usage() {
+    cat <<'EOF'
+Uso: bin/dev [--help]
+
+O fluxo de desenvolvimento ainda não está aprovado para execução automática.
+Execute bin/doctor e consulte docs/execution/LOCAL_DEVELOPMENT.md.
+EOF
+}
+
+[[ "${1:-}" != "--help" ]] || { usage; exit 0; }
+[[ $# -eq 0 ]] || { printf 'ERRO: argumento desconhecido: %s\n' "$1" >&2; exit 2; }
+[[ "$REPO_ROOT" == "$EXPECTED_ROOT" ]] || { printf 'ERRO: execução fora do repositório autorizado\n' >&2; exit 1; }
+"$SCRIPT_DIR/doctor"
+printf '%s\n' 'Scripts de desenvolvimento comprovados nos manifests:'
+printf '%s\n' '- composer dev: fluxo multi-processo ainda não validado e não executado.'
+printf '%s\n' '- npm run dev: servidor Vite ainda não validado e não executado.'
+printf '%s\n' 'Fluxo de desenvolvimento ainda não aprovado para execução automática.'
+printf '%s\n' 'Execute bin/doctor e consulte docs/execution/LOCAL_DEVELOPMENT.md.'
+exit 2

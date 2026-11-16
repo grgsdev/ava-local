@@ -1,0 +1,77 @@
+{
+    "name": "Experience",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "logsActivity": true,
+    "modelCache": true,
+    "attributes": [
+        {
+            "name": "title",
+            "type": "string",
+            "required": true,
+            "validate": true,
+            "searchAble": true,
+            "description": "Título da experiência.",
+            "example": "Degustação de Cafés Especiais"
+        },
+        {
+            "name": "description",
+            "type": "text",
+            "nullable": true,
+            "validate": true,
+            "description": "Descrição detalhada da experiência."
+        },
+        {
+            "name": "cost_in_coins",
+            "type": "integer",
+            "required": true,
+            "validate": true,
+            "description": "Custo da experiência em moedas Lupa.",
+            "example": 50
+        },
+        {
+            "name": "cost_value",
+            "type": "decimal",
+            "precision": 10,
+            "scale": 2,
+            "nullable": true,
+            "validate": true,
+            "description": "O valor de custo da experiência para o Lupa.",
+            "example": "25.50"
+        },
+        {
+            "name": "rescue_value",
+            "type": "decimal",
+            "precision": 10,
+            "scale": 2,
+            "nullable": true,
+            "validate": true,
+            "description": "O valor que o Lupa paga ao afiliado por cada resgate.",
+            "example": "30.00"
+        },
+        {
+            "name": "image",
+            "type": "image",
+            "multiple": false,
+            "nullable": true,
+            "validate": true,
+            "description": "Imagem de exibição da experiência."
+        }
+    ],
+    "relations": [
+        {
+            "name": "establishment",
+            "type": "belongsTo",
+            "related": "Establishment",
+            "description": "O afiliado parceiro que oferece esta experiência."
+        },
+        {
+            "name": "category",
+            "type": "belongsTo",
+            "related": "EstablishmentCategory",
+            "description": "A categoria à qual esta experiência pertence."
+        }
+    ]
+}

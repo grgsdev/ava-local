@@ -1,0 +1,43 @@
+{
+    "name": "Task",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "logsActivity": true,
+    "modelCache": true,
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "unique": true,
+            "validate": true,
+            "searchAble": true,
+            "description": "Nome da tarefa (ex: Check-in Diário, Indicação de Amigo).",
+            "example": "Check-in em Estabelecimento"
+        },
+        {
+            "name": "description",
+            "type": "text",
+            "nullable": true,
+            "validate": true,
+            "description": "Descrição da tarefa para o Admin."
+        },
+        {
+            "name": "points_awarded",
+            "type": "integer",
+            "default": "0",
+            "validate": true,
+            "description": "Pontos de experiência (XP) que esta tarefa concede."
+        },
+        {
+            "name": "coins_awarded",
+            "type": "integer",
+            "default": "0",
+            "validate": true,
+            "description": "Moedas que esta tarefa concede."
+        }
+    ],
+    "relations": []
+}

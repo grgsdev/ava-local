@@ -1,0 +1,86 @@
+{
+    "name": "Address",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "logsActivity": true,
+    "modelCache": true,
+    "attributes": [
+        {
+            "name": "addressable",
+            "type": "morphs",
+            "validate": false,
+            "description": "Relacionamento polimórfico (addressable_id, addressable_type)."
+        },
+        {
+            "name": "type",
+            "type": "string",
+            "length": 50,
+            "required": true,
+            "validate": true,
+            "filterAble": true,
+            "exactFilter": true,
+            "description": "Tipo do endereço (ex: comercial, residencial, cobrança).",
+            "example": "comercial"
+        },
+        {
+            "name": "zip_code",
+            "type": "string",
+            "length": 10,
+            "validate": true,
+            "searchAble": true,
+            "description": "CEP (Código de Endereçamento Postal).",
+            "example": "80000-000"
+        },
+        {
+            "name": "street",
+            "type": "string",
+            "validate": true,
+            "searchAble": true,
+            "description": "Nome da rua/logradouro.",
+            "example": "Rua das Flores"
+        },
+        {
+            "name": "number",
+            "type": "string",
+            "length": 20,
+            "validate": true,
+            "description": "Número do endereço.",
+            "example": "123"
+        },
+        {
+            "name": "complement",
+            "type": "string",
+            "nullable": true,
+            "validate": true,
+            "description": "Complemento do endereço (ex: Sala 10, Bloco B).",
+            "example": "Loja 2"
+        },
+        {
+            "name": "neighborhood",
+            "type": "string",
+            "validate": true,
+            "searchAble": true,
+            "description": "Bairro.",
+            "example": "Centro"
+        },
+        {
+            "name": "city",
+            "type": "string",
+            "validate": true,
+            "searchAble": true,
+            "description": "Cidade.",
+            "example": "Curitiba"
+        },
+        {
+            "name": "state",
+            "type": "string",
+            "length": 2,
+            "validate": true,
+            "description": "Sigla do estado (UF).",
+            "example": "PR"
+        }
+    ],
+    "relations": []
+}

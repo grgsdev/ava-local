@@ -1,0 +1,51 @@
+{
+    "name": "EstablishmentSubscription",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "logsActivity": true,
+    "modelCache": true,
+    "attributes": [
+        {
+            "name": "status",
+            "type": "string",
+            "required": true,
+            "validate": true,
+            "filterAble": true,
+            "exactFilter": true,
+            "description": "Status da subscrição (ex: active, canceled, past_due).",
+            "example": "active"
+        },
+        {
+            "name": "trial_ends_at",
+            "type": "timestamp",
+            "nullable": true,
+            "validate": true,
+            "filterAble": true,
+            "description": "Data de fim do período de trial, se aplicável."
+        },
+        {
+            "name": "ends_at",
+            "type": "timestamp",
+            "nullable": true,
+            "validate": true,
+            "filterAble": true,
+            "description": "Data em que a subscrição termina (se for cancelada)."
+        }
+    ],
+    "relations": [
+        {
+            "name": "establishment",
+            "type": "belongsTo",
+            "related": "Establishment",
+            "description": "O estabelecimento que possui esta subscrição."
+        },
+        {
+            "name": "plan",
+            "type": "belongsTo",
+            "related": "EstablishmentPlan",
+            "description": "O plano ao qual o estabelecimento está subscrito."
+        }
+    ]
+}

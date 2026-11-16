@@ -1,0 +1,67 @@
+{
+    "name": "PlatformSetting",
+    "timestamps": true,
+    "attributes": [
+        {
+            "name": "platform_name",
+            "type": "string",
+            "required": true,
+            "example": "Clube Lupa"
+        },
+        {
+            "name": "contact_info",
+            "type": "json",
+            "nullable": true,
+            "description": "JSON com dados de contato (email, whatsapp)."
+        },
+        {
+            "name": "social_links",
+            "type": "json",
+            "nullable": true,
+            "description": "JSON com links de redes sociais (instagram, landing_page)."
+        },
+        {
+            "name": "physical_address",
+            "type": "text",
+            "nullable": true
+        },
+        {
+            "name": "checkin_cooldown_minutes",
+            "type": "integer",
+            "default": "60"
+        },
+        {
+            "name": "max_checkin_distance_meters",
+            "type": "integer",
+            "default": "100"
+        },
+        {
+            "name": "free_user_max_points",
+            "type": "integer",
+            "nullable": true
+        },
+        {
+            "name": "free_user_max_level",
+            "type": "integer",
+            "nullable": true
+        },
+        {
+            "name": "free_user_max_coins",
+            "type": "integer",
+            "nullable": true
+        },
+        {
+            "name": "logo_web",
+            "type": "image",
+            "multiple": false,
+            "nullable": true
+        },
+        {
+            "name": "logo_mobile",
+            "type": "image",
+            "multiple": false,
+            "nullable": true
+        }
+    ],
+    "relations": []
+}

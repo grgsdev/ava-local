@@ -1,0 +1,40 @@
+{
+    "name": "TaskCriteria",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "logsActivity": true,
+    "modelCache": true,
+    "attributes": [
+        {
+            "name": "action_type",
+            "type": "string",
+            "required": true,
+            "validate": true,
+            "description": "A ação que o usuário precisa de fazer (ex: check_in, referral, purchase)."
+        },
+        {
+            "name": "count_required",
+            "type": "integer",
+            "default": "1",
+            "validate": true,
+            "description": "Quantas vezes a ação precisa de ser feita para este critério."
+        },
+        {
+            "name": "constraints",
+            "type": "json",
+            "nullable": true,
+            "validate": true,
+            "description": "Condições adicionais em JSON (ex: { \"minimum_spend\": 50 })."
+        }
+    ],
+    "relations": [
+        {
+            "name": "task",
+            "type": "belongsTo",
+            "related": "Task",
+            "description": "A tarefa à qual este critério pertence."
+        }
+    ]
+}

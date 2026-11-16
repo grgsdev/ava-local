@@ -1,0 +1,4 @@
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model; use Illuminate\Database\Eloquent\Relations\BelongsTo;
+class CoursePublication extends Model { public const ACTIVE='active'; public const REVOKED='revoked'; public const REPLACED='replaced'; protected $fillable=['project_id','source_course_id','snapshot_course_id','revision_number','state','published_at','revoked_at','created_by']; protected $casts=['published_at'=>'datetime','revoked_at'=>'datetime']; public function project(): BelongsTo{return $this->belongsTo(Project::class);} public function sourceCourse(): BelongsTo{return $this->belongsTo(Course::class,'source_course_id');} public function snapshotCourse(): BelongsTo{return $this->belongsTo(Course::class,'snapshot_course_id');} public function createdBy(): BelongsTo{return $this->belongsTo(User::class,'created_by');} }

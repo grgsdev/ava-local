@@ -1,0 +1,96 @@
+# ---------------------------------------------
+# CONFIGS E ARQUIVOS DE AMBIENTE
+# ---------------------------------------------
+.env
+.env.*
+homestead.yaml
+Homestead.*
+auth.json
+phpunit.xml
+.phpactor.json
+.phpunit.result.cache
+/.phpunit.cache
+
+# ---------------------------------------------
+# DEPENDÊNCIAS E COMPILAÇÕES
+# ---------------------------------------------
+/vendor
+/node_modules
+/public/hot
+/public/build
+/public/storage
+
+# ---------------------------------------------
+# STORAGE - Manter estrutura, ignorar conteúdo
+# ---------------------------------------------
+/storage/*.key
+/storage/pail
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/framework/testing/*
+/bootstrap/cache/*
+/bootstrap/ssr
+
+# Permitir estrutura dos diretórios
+!storage/
+!storage/app/
+!storage/app/public/
+!storage/framework/
+!storage/framework/cache/
+!storage/framework/sessions/
+!storage/framework/views/
+!storage/framework/testing/
+!storage/logs/
+!bootstrap/
+
+# Evita versionamento de uploads de usuários (Spatie Media Library)
+/storage/app/public/*
+!storage/app/public/.gitignore
+
+# ---------------------------------------------
+# DOCUMENTAÇÃO E FERRAMENTAS DE TERCEIROS
+# ---------------------------------------------
+/.public/vendor/scribe
+/.scribe
+/.kanbn
+/.nova
+/.zed
+/.fleet
+/.devcontainer
+# ---------------------------------------------
+# INTERNACIONALIZAÇÃO
+# ---------------------------------------------
+lang/php_*.json
+/lang/php_*.json
+
+# ---------------------------------------------
+# EDITORES E IDEs
+# ---------------------------------------------
+.idea/
+/.vscode/
+*.sublime-project
+*.sublime-workspace
+
+
+# ---------------------------------------------
+# LOGS E ARCHIVES
+# ---------------------------------------------
+*.log
+/logs
+/tests/coverage/
+
+# ---------------------------------------------
+# SISTEMAS OPERACIONAIS
+# ---------------------------------------------
+.DS_Store
+Thumbs.db
+
+# ---------------------------------------------
+# OUTROS (Ex.: Tiptap, SSR, etc.)
+# ---------------------------------------------
+.tiptap-history
+/v1
+/versioned
+

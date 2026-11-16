@@ -1,0 +1,188 @@
+{
+    "name": "Establishment",
+    "version": "V1",
+    "softDeletes": true,
+    "timestamps": true,
+    "useIsActive": true,
+    "useApprovedStatus": true,
+    "useScribe": true,
+    "authorize": true,
+    "logsActivity": true,
+    "clearsResponseCache": true,
+    "modelCache": true,
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "validate": true,
+            "sortAble": true,
+            "filterAble": true,
+            "searchAble": true,
+            "description": "Nome da Marca ou Nome Fantasia do estabelecimento.",
+            "example": "Cantina da Nona"
+        },
+        {
+            "name": "legal_name",
+            "type": "string",
+            "nullable": true,
+            "validate": true,
+            "searchAble": true,
+            "description": "Razão Social do estabelecimento.",
+            "example": "Restaurante Sabor Divino Ltda."
+        },
+        {
+            "name": "description",
+            "type": "text",
+            "nullable": true,
+            "validate": true,
+            "searchAble": true,
+            "description": "Descrição detalhada sobre o estabelecimento, sua história, o que oferece, etc."
+        },
+        {
+            "name": "document_number",
+            "type": "string",
+            "length": 20,
+            "nullable": true,
+            "unique": true,
+            "validate": true,
+            "searchAble": true,
+            "description": "CNPJ do estabelecimento.",
+            "example": "12.345.678/0001-99"
+        },
+        {
+            "name": "company_age",
+            "type": "string",
+            "length": 50,
+            "nullable": true,
+            "validate": true,
+            "description": "Tempo de empresa do estabelecimento.",
+            "example": "Há mais de 10 anos"
+        },
+        {
+            "name": "business_model",
+            "type": "string",
+            "length": 50,
+            "nullable": true,
+            "validate": true,
+            "description": "Informa se o estabelecimento produz ou revende seus produtos.",
+            "example": "Produção Própria"
+        },
+        {
+            "name": "email",
+            "type": "email",
+            "nullable": true,
+            "unique": true,
+            "validate": true,
+            "searchAble": true,
+            "description": "E-mail de contato principal do estabelecimento.",
+            "example": "contato@cantinadanona.com"
+        },
+        {
+            "name": "phone_number",
+            "type": "string",
+            "length": 20,
+            "nullable": true,
+            "validate": true,
+            "description": "Telefone de contato principal.",
+            "example": "+55 41 3333-4444"
+        },
+        {
+            "name": "whatsapp_number",
+            "type": "string",
+            "length": 20,
+            "nullable": true,
+            "validate": true,
+            "description": "Número de WhatsApp para contato.",
+            "example": "+55 41 99999-8888"
+        },
+        {
+            "name": "social_links",
+            "type": "json",
+            "nullable": true,
+            "validate": true,
+            "description": "Objeto JSON com links para redes sociais e websites (ex: {\"website\": \"...\", \"instagram\": \"...\"})."
+        },
+        {
+            "name": "opening_hours",
+            "type": "json",
+            "nullable": true,
+            "validate": true,
+            "description": "Estrutura JSON com os horários de funcionamento."
+        },
+        {
+            "name": "logo",
+            "type": "image",
+            "multiple": false,
+            "nullable": true,
+            "description": "Logotipo do estabelecimento."
+        },
+        {
+            "name": "cover_photo",
+            "type": "image",
+            "multiple": false,
+            "nullable": true,
+            "description": "Foto de capa para o perfil do estabelecimento."
+        },
+        {
+            "name": "gallery",
+            "type": "image",
+            "multiple": true,
+            "nullable": true,
+            "description": "Galeria de fotos do estabelecimento."
+        },
+        {
+            "name": "shop_photo",
+            "type": "image",
+            "multiple": false,
+            "nullable": true,
+            "description": "Foto da loja ou do resultado do serviço."
+        },
+        {
+            "name": "product_photo",
+            "type": "image",
+            "multiple": false,
+            "nullable": true,
+            "description": "Foto de um produto em destaque."
+        },
+        {
+            "name": "behind_the_scenes_photo",
+            "type": "image",
+            "multiple": false,
+            "nullable": true,
+            "description": "Foto dos bastidores ou do processo de criação."
+        }
+    ],
+    "relations": [
+        {
+            "name": "owner",
+            "type": "belongsTo",
+            "related": "User",
+            "description": "O usuário que é o proprietário principal deste estabelecimento."
+        },
+        {
+            "name": "team_members",
+            "type": "belongsToMany",
+            "related": "User",
+            "description": "Todos os usuários (incluindo o dono) que têm permissão para gerir este estabelecimento."
+        },
+        {
+            "name": "addresses",
+            "type": "morphMany",
+            "related": "Address",
+            "description": "Lista de endereços associados a este estabelecimento."
+        },
+        {
+            "name": "categories",
+            "type": "belongsToMany",
+            "related": "EstablishmentCategory",
+            "description": "As categorias e subcategorias às quais este estabelecimento pertence."
+        },
+        {
+            "name": "subscription",
+            "type": "hasOne",
+            "related": "EstablishmentSubscription",
+            "description": "A subscrição ativa do estabelecimento."
+        }
+    ]
+}
